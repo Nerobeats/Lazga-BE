@@ -15,7 +15,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from rest_framework_simplejwt.views import TokenObtainPairView
+from lazga_api import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('login/', TokenObtainPairView.as_view(), name='login'),
+    path('register/', views.RegisterView.as_view(), name='register'),
+    path('create/', views.ItemCreateView.as_view(), name='create'),
+    path('list/', views.ItemsList.as_view(), name='list'),
+    path('detail/<int:item_id>', views.ItemDetailView.as_view(), name='detail'),
+    path('update/<int:item_id>', views.ItemUpdateView.as_view(), name='update'),
+    path('delete/<int:item_id>', views.DeleteView.as_view(), name='delete'),
 ]
