@@ -11,7 +11,7 @@ class Item(models.Model):
     POSTER="PR"
     STICKER="ST"
     COASTER="CR"
-
+    LONG_SLEEVE = "LS"
     TYPES = [
             (TSHIRT, 'tshirt'),
             (HOODIE, 'hoodie'),
@@ -20,6 +20,7 @@ class Item(models.Model):
             (POSTER, 'poster'),
             (STICKER, 'sticker'),
             (COASTER, 'coaster'),
+            (LONG_SLEEVE, "long sleeve")
         ]
     type = models.CharField(
         max_length=2,
