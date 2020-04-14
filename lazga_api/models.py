@@ -32,6 +32,5 @@ class Item(models.Model):
     tags = models.CharField(max_length=200)
     price = models.DecimalField(max_digits=5, decimal_places=2, default= 17.00)
     added_by = models.ForeignKey(User, on_delete=models.CASCADE, default=1 )
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     def __str__(self):
         return self.name
