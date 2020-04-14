@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .models import Item
 from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView, RetrieveAPIView,DestroyAPIView
-from .serializers import ItemListSerializer, UserCreateSerializer, ItemCreateSerializer, ItemUpdateSerializer, ItemDetailSerializer
+from .serializers import ItemSerializer, UserCreateSerializer, ItemCreateSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated,IsAdminUser
 
 class RegisterView(CreateAPIView):
@@ -9,7 +9,7 @@ class RegisterView(CreateAPIView):
 
 class ItemsList(ListAPIView):
     queryset = Item.objects.all()
-    serializer_class = ItemListSerializer
+    serializer_class = ItemSerializer
 
 
 class ItemCreateView(CreateAPIView):
@@ -22,7 +22,7 @@ class ItemCreateView(CreateAPIView):
 
 class ItemDetailView(RetrieveAPIView):
     queryset = Item.objects.all()
-    serializer_class = ItemDetailSerializer
+    serializer_class = ItemSerializer
     lookup_field = 'id'
     lookup_url_kwarg = 'item_id'
 
@@ -30,13 +30,13 @@ class ItemDetailView(RetrieveAPIView):
 class ItemUpdateView(UpdateAPIView):
     permission_classes = [IsAuthenticated, IsAdminUser]
     queryset = Item.objects.all()
-    serializer_class = ItemUpdateSerializer
+    serializer_class = ItemCreateSerializer
     lookup_field = 'id'
     lookup_url_kwarg = 'item_id'
 
 class DeleteView(DestroyAPIView):
     permission_classes = [IsAuthenticated, IsAdminUser]
     queryset = Item.objects.all()
-    serializer_class = ItemListSerializer
+    serializer_class = ItemSerializer
     lookup_field = 'id'
     lookup_url_kwarg = 'item_id'

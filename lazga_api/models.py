@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+import uuid
 
 class Item(models.Model):
     
@@ -30,7 +30,8 @@ class Item(models.Model):
     image_url = models.URLField(max_length=200)
     description = models.TextField(null=True, blank=True)
     tags = models.CharField(max_length=200)
-    itemPrice = models.DecimalField(max_digits=5, decimal_places=2, default= 17.00)
+    price = models.DecimalField(max_digits=5, decimal_places=2, default= 17.00)
     added_by = models.ForeignKey(User, on_delete=models.CASCADE, default=1 )
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     def __str__(self):
         return self.name

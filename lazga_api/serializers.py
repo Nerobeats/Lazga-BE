@@ -19,11 +19,6 @@ class UserCreateSerializer(serializers.ModelSerializer):
         new_user.save()
         return validated_data
 
-class ItemListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Item
-        fields = ['name', 'type', 'tags' , "image_url" , "id"]
-
 
 class ItemCreateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -31,14 +26,8 @@ class ItemCreateSerializer(serializers.ModelSerializer):
         fields = ['name', 'description', 'type', 'tags',"image_url"]
 
 
-class ItemUpdateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Item
-        fields = ['name', 'description', 'type', 'tags',"image_url"]
 
-
-
-class ItemDetailSerializer(serializers.ModelSerializer):
+class ItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Item
