@@ -9,9 +9,9 @@ class UserCreateSerializer(serializers.ModelSerializer):
         fields = ['username', 'password', 'first_name', "last_name", "email"]
 
     def create(self, validated_data):
-        username = validated_data['username']
+        username = validated_data['username'] # I'd recommend using .get() to access values in dictionaries (safer)
         password = validated_data['password']
-        new_user = User(username=username)
+        new_user = User(username=username) # you can add the first and last names and email here
         new_user.set_password(password)
         new_user.first_name = validated_data['first_name']
         new_user.last_name = validated_data['last_name']
@@ -19,6 +19,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
         new_user.save()
         return validated_data
 
+# you can combine these three serializers into one
 class ItemListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
