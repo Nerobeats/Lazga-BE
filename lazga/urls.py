@@ -28,3 +28,15 @@ urlpatterns = [
     path('update/<int:item_id>', views.ItemUpdateView.as_view(), name='update'),
     path('delete/<int:item_id>', views.DeleteView.as_view(), name='delete'),
 ]
+
+#####
+# Alternative (easier to understand) URLS
+#####
+
+alt_urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('login/', TokenObtainPairView.as_view(), name='login'),
+    path('register/', views.RegisterView.as_view(), name='register'),
+    path('items/', views.ItemsView.as_view(), name='list-create'),
+    path('items/<int:item_id>', views.ItemView.as_view(), name='detail'),
+]

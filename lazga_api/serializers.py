@@ -2,8 +2,10 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import Item
 
+
 class UserCreateSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
+
     class Meta:
         model = User
         fields = ['username', 'password', 'first_name', "last_name", "email"]
@@ -23,14 +25,10 @@ class UserCreateSerializer(serializers.ModelSerializer):
 class ItemCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
-        fields = ['name', 'description', 'type', 'tags',"image_url", "price"]
-
+        fields = ['name', 'description', 'type', 'tags', "image_url", "price"]
 
 
 class ItemSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Item
         fields = '__all__'
-
-
