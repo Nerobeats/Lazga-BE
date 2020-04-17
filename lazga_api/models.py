@@ -3,27 +3,14 @@ from django.contrib.auth.models import User
 import uuid
 
 class Type (models.Model):
-    TSHIRT = "RT"
-    HOODIE = "HD"
-    MUG = "MG"
-    POPSOCKET = "PS"
-    POSTER = "PR"
-    STICKER = "ST"
-    COASTER = "CR"
-    TYPES = [
-        (TSHIRT, 'tshirt'),
-        (HOODIE, 'hoodie'),
-        (MUG, 'mug'),
-        (POPSOCKET, 'popsocket'),
-        (POSTER, 'poster'),
-        (STICKER, 'sticker'),
-        (COASTER, 'coaster'),
-    ]
+   
     type = models.CharField(
-        max_length=2,
-        choices=TYPES,
-        default=TSHIRT,
+        max_length=50,
+        default="tshirt",
     )
+    def __str__(self):
+        return self.type
+
 class Item(models.Model):
 
     type = models.ForeignKey(Type , on_delete=models.CASCADE , related_name="items", default =1)
