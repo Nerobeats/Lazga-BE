@@ -37,19 +37,18 @@ class ItemSerializer(serializers.ModelSerializer):
 
 class OrderItemSerializer(serializers.ModelSerializer):
     item = serializers.SerializerMethodField()
-
     class Meta:
         model = OrderItem
         exclude = ['order']
-
-    def get_item(self, obj):
-        return Item.Objects.filter(id=obj.item)
+    def get_item(self,obj):
+        return (ItemSerializer(Item.objects.get(id=obj.item.id)).data)
+   
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    products = OrderItemSerializer(many=True)
-    products = serializers.SerializerMethodField()
+    orderitem_set = OrderItemSerializer(many=True)
 
     class Meta:
         model = Order
-        exclude = ['user']
+        exclude = ['user','products']
+    

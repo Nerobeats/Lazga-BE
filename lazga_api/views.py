@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-
+from .permissions import IsNotSubmitted
 class RegisterView(CreateAPIView):
     serializer_class = UserCreateSerializer
 
@@ -84,7 +84,7 @@ class OrderUpdateView(UpdateAPIView):
 
 
 class OrderDeleteView(DestroyAPIView):
-    permission_classes = [IsAuthenticated, IsAdminUser]
+    permission_classes = [IsAuthenticated, IsNotSubmitted]
     # Count the user orders (cart)             ^^
     queryset = Order.objects.all()
     serializer_class = OrderSerializer

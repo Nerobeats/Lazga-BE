@@ -2,9 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 import uuid
 
-
-class Item(models.Model):
-
+class Type (models.Model):
     TSHIRT = "RT"
     HOODIE = "HD"
     MUG = "MG"
@@ -28,8 +26,11 @@ class Item(models.Model):
         choices=TYPES,
         default=TSHIRT,
     )
+class Item(models.Model):
+
+    type = models.ForeignKey(Type , on_delete=models.CASCADE , related_name="items", default =1)
     name = models.CharField(max_length=150)
-    image_url = models.URLField(max_length=200)
+    image_url = models.URLField(max_length=200,default="https://pbs.twimg.com/profile_images/1046609638425268224/-pJ9ZOS9_400x400.jpg")
     description = models.TextField(null=True, blank=True)
     tags = models.CharField(max_length=200)
     itemPrice = models.DecimalField(
