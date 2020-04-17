@@ -2,26 +2,27 @@ from django.db import models
 from django.contrib.auth.models import User
 import uuid
 
+
 class Item(models.Model):
-    
-    TSHIRT="RT"
-    HOODIE="HD"
-    MUG="MG"
-    POPSOCKET="PS"
-    POSTER="PR"
-    STICKER="ST"
-    COASTER="CR"
+
+    TSHIRT = "RT"
+    HOODIE = "HD"
+    MUG = "MG"
+    POPSOCKET = "PS"
+    POSTER = "PR"
+    STICKER = "ST"
+    COASTER = "CR"
     LONG_SLEEVE = "LS"
     TYPES = [
-            (TSHIRT, 'tshirt'),
-            (HOODIE, 'hoodie'),
-            (MUG, 'mug'),
-            (POPSOCKET, 'popsocket'),
-            (POSTER, 'poster'),
-            (STICKER, 'sticker'),
-            (COASTER, 'coaster'),
-            (LONG_SLEEVE, "long sleeve")
-        ]
+        (TSHIRT, 'tshirt'),
+        (HOODIE, 'hoodie'),
+        (MUG, 'mug'),
+        (POPSOCKET, 'popsocket'),
+        (POSTER, 'poster'),
+        (STICKER, 'sticker'),
+        (COASTER, 'coaster'),
+        (LONG_SLEEVE, "long sleeve")
+    ]
     type = models.CharField(
         max_length=2,
         choices=TYPES,
@@ -31,7 +32,48 @@ class Item(models.Model):
     image_url = models.URLField(max_length=200)
     description = models.TextField(null=True, blank=True)
     tags = models.CharField(max_length=200)
-    itemPrice = models.DecimalField(max_digits=5, decimal_places=2, default= 17.00)
-    added_by = models.ForeignKey(User, on_delete=models.CASCADE, default=1 )
+    itemPrice = models.DecimalField(
+        max_digits=5, decimal_places=2, default=17.00)
+    added_by = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
+
     def __str__(self):
         return self.name
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey("Order", on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    color = models.CharField(default="0", max_length=50)
+    size = models.CharField(default="0", max_length=50)
+    magic = models.BooleanField(default=False)
+    quantity = models.PositiveIntegerField()
+
+    def __str__(self):
+        return self.order.user.username
+
+
+class Order(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="orders")
+    products = models.ManyToManyField(Item, through=OrderItem)
+    totalPrice = models.DecimalField(max_digits=6, decimal_places=2)
+    PREPARING = "PR"
+    OUT_FOR_DELIVERY = "OD"
+    DELIVERED = "DV"
+    CANCELED = "PS"
+    NOT_SUBMITTED = "NS"
+    STATUS = [
+        (PREPARING, 'preparing order'),
+        (OUT_FOR_DELIVERY, 'out for delivery'),
+        (DELIVERED, 'delivered'),
+        (CANCELED, 'canceled'),
+        (NOT_SUBMITTED, 'not submitted'),
+    ]
+    status = models.CharField(
+        max_length=30,
+        choices=STATUS,
+        default=NOT_SUBMITTED,
+    )
+
+    def __str__(self):
+        return self.status

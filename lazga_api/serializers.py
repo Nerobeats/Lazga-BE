@@ -1,9 +1,11 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Item
+from .models import Item, Order, OrderItem
+
 
 class UserCreateSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
+
     class Meta:
         model = User
         fields = ['username', 'password', 'first_name', "last_name", "email"]
@@ -23,8 +25,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
 class ItemCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
-        fields = ['name', 'description', 'type', 'tags',"image_url", "price"]
-
+        fields = ['name', 'description', 'type', 'tags', "image_url", "price"]
 
 
 class ItemSerializer(serializers.ModelSerializer):
@@ -34,3 +35,21 @@ class ItemSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class OrderItemSerializer(serializers.ModelSerializer):
+    item = serializers.SerializerMethodField()
+
+    class Meta:
+        model = OrderItem
+        exclude = ['order']
+
+    def get_item(self, obj):
+        return Item.Objects.filter(id=obj.item)
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    products = OrderItemSerializer(many=True)
+    products = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Order
+        exclude = ['user']

@@ -1,11 +1,16 @@
 from django.shortcuts import render
-from .models import Item
-from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView, RetrieveAPIView,DestroyAPIView
-from .serializers import ItemSerializer, UserCreateSerializer, ItemCreateSerializer
-from rest_framework.permissions import AllowAny, IsAuthenticated,IsAdminUser
+from .models import Item, Order, OrderItem
+from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView, RetrieveAPIView, DestroyAPIView
+from .serializers import ItemSerializer, UserCreateSerializer, ItemCreateSerializer, OrderSerializer
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+
 
 class RegisterView(CreateAPIView):
     serializer_class = UserCreateSerializer
+
 
 class ItemsList(ListAPIView):
     queryset = Item.objects.all()
@@ -34,9 +39,54 @@ class ItemUpdateView(UpdateAPIView):
     lookup_field = 'id'
     lookup_url_kwarg = 'item_id'
 
+
 class DeleteView(DestroyAPIView):
     permission_classes = [IsAuthenticated, IsAdminUser]
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
     lookup_field = 'id'
     lookup_url_kwarg = 'item_id'
+
+
+class OrderCreateView(APIView):
+    def post(self, request, *args, **kwargs):
+        order_obj = Order.objects.create(
+            user=request.user, totalPrice=request.data.get("totalPrice"))
+        for order in request.data.get("products"):
+            product_id = order.get('item')
+            quantity = order.get('quantity')
+            size = order.get('size')
+            color = order.get('color')
+            product_obj = Item.objects.get(id=product_id)
+            productItem = OrderItem.objects.create(
+                order=order_obj, item=product_obj, size=size, color=color, quantity=quantity)
+        return Response(status=status.HTTP_201_CREATED)
+
+
+class OrdersList(ListAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+
+
+class OrderDetailView(RetrieveAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    lookup_field = 'id'
+    lookup_url_kwarg = 'order_id'
+
+
+class OrderUpdateView(UpdateAPIView):
+    permission_classes = [IsAuthenticated, IsAdminUser]
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    lookup_field = 'id'
+    lookup_url_kwarg = 'order_id'
+
+
+class OrderDeleteView(DestroyAPIView):
+    permission_classes = [IsAuthenticated, IsAdminUser]
+    # Count the user orders (cart)             ^^
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    lookup_field = 'id'
+    lookup_url_kwarg = 'order_id'

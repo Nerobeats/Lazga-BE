@@ -27,4 +27,13 @@ urlpatterns = [
     path('detail/<int:item_id>', views.ItemDetailView.as_view(), name='detail'),
     path('update/<int:item_id>', views.ItemUpdateView.as_view(), name='update'),
     path('delete/<int:item_id>', views.DeleteView.as_view(), name='delete'),
+    # Orders
+    path('create/order/', views.OrderCreateView.as_view(), name='order-create'),
+    path('list/orders/', views.OrdersList.as_view(), name='orders-list'),
+    path('detail/order/<int:order_id>',
+         views.OrderDetailView.as_view(), name='order-detail'),
+    path('update/order/<int:order_id>',
+         views.OrderUpdateView.as_view(), name='order-update'),
+    path('delete/order/<int:order_id>',
+         views.OrderDeleteView.as_view(), name='order-delete'),
 ]
