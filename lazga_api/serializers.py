@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Item, Order, OrderItem
+from .models import Item, Order, OrderItem,Type
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
@@ -32,6 +32,12 @@ class ItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Item
+        fields = '__all__'
+
+class TypeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Type
         fields = '__all__'
 
 

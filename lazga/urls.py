@@ -36,4 +36,5 @@ urlpatterns = [
          views.OrderUpdateView.as_view(), name='order-update'),
     path('delete/order/<int:order_id>',
          views.OrderDeleteView.as_view(), name='order-delete'),
+    path('types/', views.TypesList.as_view(), name='types-list'),
 ]

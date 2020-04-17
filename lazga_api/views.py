@@ -1,7 +1,7 @@
 from django.shortcuts import render
-from .models import Item, Order, OrderItem
+from .models import Item, Order, OrderItem,Type
 from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView, RetrieveAPIView, DestroyAPIView
-from .serializers import ItemSerializer, UserCreateSerializer, ItemCreateSerializer, OrderSerializer
+from .serializers import ItemSerializer, UserCreateSerializer, ItemCreateSerializer, OrderSerializer,TypeSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -15,6 +15,10 @@ class RegisterView(CreateAPIView):
 class ItemsList(ListAPIView):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
+
+class TypesList(ListAPIView):
+    queryset = Type.objects.all()
+    serializer_class = TypeSerializer
 
 
 class ItemCreateView(CreateAPIView):
