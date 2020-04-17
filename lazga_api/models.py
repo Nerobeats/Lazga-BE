@@ -61,12 +61,14 @@ class Order(models.Model):
     DELIVERED = "DV"
     CANCELED = "PS"
     NOT_SUBMITTED = "NS"
+    TEST = "TS"
     STATUS = [
         (PREPARING, 'preparing order'),
         (OUT_FOR_DELIVERY, 'out for delivery'),
         (DELIVERED, 'delivered'),
         (CANCELED, 'canceled'),
         (NOT_SUBMITTED, 'not submitted'),
+        (TEST, 'test'),
     ]
     status = models.CharField(
         max_length=30,
