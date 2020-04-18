@@ -37,12 +37,13 @@ class ItemSerializer(serializers.ModelSerializer):
 
 class OrderItemSerializer(serializers.ModelSerializer):
     item = serializers.SerializerMethodField()
+
     class Meta:
         model = OrderItem
         exclude = ['order']
-    def get_item(self,obj):
+
+    def get_item(self, obj):
         return (ItemSerializer(Item.objects.get(id=obj.item.id)).data)
-   
 
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -50,5 +51,4 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        exclude = ['user','products']
-    
+        exclude = ['user', 'products']
