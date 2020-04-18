@@ -58,3 +58,10 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         exclude = ['user', 'products']
+
+class OrderListSerializer(serializers.ModelSerializer):
+    orderitem_set = OrderItemSerializer(many=True)
+
+    class Meta:
+        model = Order
+        fields = '__all__'
