@@ -21,26 +21,11 @@ from lazga_api import views
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
+    # Authentications
     path('admin/', admin.site.urls),
     path('login/', TokenObtainPairView.as_view(), name='login'),
     path('register/', views.RegisterView.as_view(), name='register'),
-    path('create/', views.ItemCreateView.as_view(), name='create'),
-    path('list/', views.ItemsList.as_view(), name='list'),
-    path('detail/<int:item_id>', views.ItemDetailView.as_view(), name='detail'),
-    path('update/<int:item_id>', views.ItemUpdateView.as_view(), name='update'),
-    path('delete/<int:item_id>', views.DeleteView.as_view(), name='delete'),
-    # Orders
-    path('create/order/', views.OrderCreateView.as_view(), name='order-create'),
-    path('list/orders/', views.OrdersList.as_view(), name='orders-list'),
-    path('detail/order/<int:order_id>',
-         views.OrderDetailView.as_view(), name='order-detail'),
-    path('update/order/<int:order_id>',
-         views.OrderUpdateView.as_view(), name='order-update'),
-    path('delete/order/<int:order_id>',
-         views.OrderDeleteView.as_view(), name='order-delete'),
-    path('types/', views.TypesList.as_view(), name='types-list'),
-
-    # Password
+     # Password-props
     path('password_change/done/', auth_views.PasswordChangeDoneView.as_view(),
          name='password_change_done'),
 
@@ -57,5 +42,21 @@ urlpatterns = [
 
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(),
          name='password_reset_complete'),
+    # Items
+    path('create/', views.ItemCreateView.as_view(), name='create'),
+    path('list/', views.ItemsList.as_view(), name='list'),
+    path('update/<int:item_id>', views.ItemUpdateView.as_view(), name='update'),
+    path('delete/<int:item_id>', views.DeleteView.as_view(), name='delete'),
+    # Orders
+    path('create/order/', views.OrderCreateView.as_view(), name='order-create'),
+    path('list/orders/', views.OrdersList.as_view(), name='orders-list'),
+    path('update/order/<int:order_id>',
+         views.OrderUpdateView.as_view(), name='order-update'),
+    path('delete/order/<int:order_id>',
+         views.OrderDeleteView.as_view(), name='order-delete'),
+    # Types (Categories)
+    path('types/', views.TypesList.as_view(), name='types-list'),
+
+   
 
 ]

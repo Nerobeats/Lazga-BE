@@ -29,13 +29,6 @@ class ItemCreateView(CreateAPIView):
         serializer.save(added_by=self.request.user)
 
 
-class ItemDetailView(RetrieveAPIView):
-    queryset = Item.objects.all()
-    serializer_class = ItemSerializer
-    lookup_field = 'id'
-    lookup_url_kwarg = 'item_id'
-
-
 class ItemUpdateView(UpdateAPIView):
     permission_classes = [IsAuthenticated, IsAdminUser]
     queryset = Item.objects.all()
@@ -62,29 +55,26 @@ class OrderCreateView(APIView):
             size = order.get('size')
             color = order.get('color')
             product_obj = Item.objects.get(id=product_id)
+            product_obj.selling_counter = product_obj.selling_counter + int(quantity)
             productItem = OrderItem.objects.create(
                 order=order_obj, item=product_obj, size=size, color=color, quantity=quantity)
         return Response(status=status.HTTP_201_CREATED)
 
 
 class OrdersList(ListAPIView):
-    queryset = Order.objects.all()
+    permission_classes = [IsAuthenticated]
     serializer_class = OrderListSerializer
-
-
-class OrderDetailView(RetrieveAPIView):
-    queryset = Order.objects.all()
-    serializer_class = OrderListSerializer
-    lookup_field = 'id'
-    lookup_url_kwarg = 'order_id'
+    def get_queryset(self):
+        return (Order.objects.filter(user = self.request.user))
 
 
 class OrderUpdateView(UpdateAPIView):
     permission_classes = [IsAuthenticated, IsAdminUser]
-    queryset = Order.objects.all()
     serializer_class = OrderSerializer
     lookup_field = 'id'
     lookup_url_kwarg = 'order_id'
+    def get_queryset(self):
+        return (Order.objects.filter(user = self.request.user))
 
 
 class OrderDeleteView(DestroyAPIView):

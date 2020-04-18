@@ -25,7 +25,8 @@ class Item(models.Model):
     itemPrice = models.DecimalField(
         max_digits=5, decimal_places=2, default=17.00)
     added_by = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
-
+    featured = models.BooleanField(default= False)
+    selling_counter = models.PositiveIntegerField(default = 0)
     def __str__(self):
         return self.name
 
@@ -39,7 +40,7 @@ class OrderItem(models.Model):
     quantity = models.PositiveIntegerField()
 
     def __str__(self):
-        return self.order.user.username
+        return (f'{self.order.user.username}\'s order of {self.item.name} in order {self.order.id}')
 
 
 class Order(models.Model):
@@ -68,4 +69,4 @@ class Order(models.Model):
     )
 
     def __str__(self):
-        return self.status
+        return  (f'{self.order.user.username}\'s order #{self.order.id}')
