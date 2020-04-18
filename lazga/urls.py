@@ -38,6 +38,8 @@ urlpatterns = [
          views.OrderUpdateView.as_view(), name='order-update'),
     path('delete/order/<int:order_id>',
          views.OrderDeleteView.as_view(), name='order-delete'),
+    path('types/', views.TypesList.as_view(), name='types-list'),
+
     # Password
     path('password_change/done/', auth_views.PasswordChangeDoneView.as_view(),
          name='password_change_done'),
