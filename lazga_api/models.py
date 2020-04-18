@@ -2,20 +2,24 @@ from django.db import models
 from django.contrib.auth.models import User
 import uuid
 
+
 class Type (models.Model):
-   
+
     type = models.CharField(
         max_length=50,
         default="tshirt",
     )
+
     def __str__(self):
         return self.type
 
+
 class Item(models.Model):
 
-    type = models.ForeignKey(Type , on_delete=models.CASCADE , related_name="items", default =1)
-    name = models.CharField(max_length=150, default = "potato")
-    image_url = models.URLField(max_length=200,default="https://pbs.twimg.com/profile_images/1046609638425268224/-pJ9ZOS9_400x400.jpg")
+    type = models.ForeignKey(
+        Type, on_delete=models.CASCADE, related_name="items", default=1)
+    name = models.CharField(max_length=150, default="")
+    image_url = models.URLField(max_length=200, default="")
     description = models.TextField(null=True, blank=True)
     tags = models.CharField(max_length=200)
     itemPrice = models.DecimalField(
