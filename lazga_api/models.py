@@ -71,7 +71,7 @@ class Order(models.Model):
     )
 
     def __str__(self):
-        return  (f'{self.order.user.username}\'s order #{self.id}')
+        return  (f'{self.user.username}\'s order #{self.id}')
 
 
 class Profile (models.Model):
@@ -79,7 +79,7 @@ class Profile (models.Model):
     bio = models.TextField(null = True , blank = True)
     image = models.ImageField(null = True , blank = True)
     favorites = models.ManyToManyField(Item, related_name = "favorites" ,blank = True,default = None , symmetrical = False)
-    
+
     def __str__(self):
         return (f'{self.user.username}\'s profile')
 
