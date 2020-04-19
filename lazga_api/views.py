@@ -1,17 +1,33 @@
 from django.shortcuts import render
-from .models import Item, Order, OrderItem,Type, Profile
+
 from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView, RetrieveAPIView, DestroyAPIView
-from .serializers import ItemSerializer, UserCreateSerializer, ItemCreateSerializer, OrderSerializer,TypeSerializer,OrderListSerializer,ProfileSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from .permissions import IsNotSubmitted
+from .serializers import (
+ItemSerializer,
+UserCreateSerializer,
+ItemCreateSerializer,
+OrderSerializer,
+OrderItemSerializer,
+TypeSerializer,
+OrderListSerializer,
+ProfileSerializer,
+OrderSubmitSerializer,
+ProfileUpdateSerializer
+)
+
+from .models import Item, Order, OrderItem,Type, Profile
+
+from .permissions import IsNotSubmitted ,IsOwner
+
+# -------------- Register -----------#
 class RegisterView(CreateAPIView):
     serializer_class = UserCreateSerializer
 
-
+#---------------ITEMS CRUD--------------------#
 class ItemsList(ListAPIView):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
@@ -37,33 +53,37 @@ class ItemUpdateView(UpdateAPIView):
     lookup_url_kwarg = 'item_id'
 
 
-class DeleteView(DestroyAPIView):
+class DeleteItemView(DestroyAPIView):
     permission_classes = [IsAuthenticated, IsAdminUser]
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
     lookup_field = 'id'
     lookup_url_kwarg = 'item_id'
 
+#---------------Order & OrderItem CRUD--------------------#
 
-class OrderCreateView(APIView):
+class OrderItemCreateView(APIView):
     def post(self, request, *args, **kwargs):
-        order_obj = Order.objects.create(
-            user=request.user, totalPrice=request.data.get("totalPrice"))
-        for order in request.data.get("products"):
-            product_id = order.get('item')
-            quantity = order.get('quantity')
-            product_obj = Item.objects.get(id=product_id)
-            type = Type.objects.filter(id= product_obj.type)
-            product_obj.selling_counter = product_obj.selling_counter + int(quantity)
-            productItem = OrderItem.objects.create(
-                order=order_obj, item=product_obj, quantity=quantity)
-            if (type.color):
-                productItem.color = order.get('color')
-            if (type.size):
-                productItem.size = order.get('size')
-            if (type.magic):
-                productItem.magic = order.get('magic')
+        order = Order.objects.get(user = self.request.user, status ="NS" )
+        product_id = request.data.get('item')
+        quantity = request.data.get('quantity')
+        product_obj = Item.objects.get(id=product_id)
+        type = Type.objects.get(id= product_obj.type.id)
+        product_obj.selling_counter = product_obj.selling_counter + int(quantity)
+        color = "N/A"
+        size = "N/A"
+        magic = False
+        if (type.color):
+           color = request.data.get("color")
+        if (type.size):
+            size = request.data.get('size')
+        if (type.magic):
+            magic = request.data.get('magic')
+        order.products.add(product_obj , through_defaults={"order" : order, "item" :product_obj,"quantity" : quantity,  "color": color, "size" : size , "magic" : magic})
+        new_product = OrderItem.objects.create(order = order, item = product_obj , size = size , quantity = quantity , color = color , magic = magic)
+        new_product.save()
         return Response(status=status.HTTP_201_CREATED)
+        
 
 
 class OrdersList(ListAPIView):
@@ -71,6 +91,15 @@ class OrdersList(ListAPIView):
     serializer_class = OrderListSerializer
     def get_queryset(self):
         return (Order.objects.filter(user = self.request.user))
+
+class SubmitOrder(UpdateAPIView):
+    permissions = [IsOwner]
+    serializer_class = OrderSubmitSerializer
+    def get_object(self):
+        order = Order.objects.get(user = self.request.user, status ="NS" )
+        if(self.request.data.get('status' != "NS")):
+            Order.objects.create(user = self.request.user , status = "NS")
+        return (order)
 
 
 class OrderUpdateView(UpdateAPIView):
@@ -84,34 +113,41 @@ class OrderUpdateView(UpdateAPIView):
         return (Order.objects.filter(user = self.request.user))
 
 
-class OrderDeleteView(DestroyAPIView):
+class OrderItemDeleteView(DestroyAPIView):
     permission_classes = [IsAuthenticated, IsNotSubmitted]
-    # Count the user orders (cart)             ^^
-    queryset = Order.objects.all()
-    serializer_class = OrderSerializer
+    queryset = OrderItem.objects.all()
+    serializer_class = OrderItemSerializer
     lookup_field = 'id'
-    lookup_url_kwarg = 'order_id'
+    lookup_url_kwarg = 'orderitem_id'
 
+#---------------Profile & Favorites CRUD--------------------#
 
 class ProfilesList(ListAPIView):
     permission_classes = [IsAuthenticated]
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
 
-class ProfilesUpdate(UpdateAPIView):
-    permission_classes = [IsAuthenticated , IsAdminUser]
-    serializer_class = ProfileSerializer
-    lookup_field = 'id'
-    lookup_url_kwarg = 'profile_id'
-    def get_queryset(self):
-        if(request.user.IsAdminUser):
-            return (Profile.objects.all())
-        return (Profile.objects.filter(user = self.request.user))
+class ProfileUpdate(UpdateAPIView):
 
+   def put(self, request, profile_id, format=None):
+        print (profile_id)
+        profile = Profile.objects.get(user_id = profile_id)
+        serializer = ProfileUpdateSerializer(profile, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class DeleteProfileView(DestroyAPIView):
-    permission_classes = [IsAuthenticated, IsAdminUser]
-    queryset = Profile.objects.all()
-    serializer_class = ProfileSerializer
-    lookup_field = 'id'
-    lookup_url_kwarg = 'profile_id'
+class AddToFavorites(UpdateAPIView):
+    def put(self, request,format=None):
+        profile = Profile.objects.get(user_id = request.user.id)
+        item = Item.objects.get(id = request.data.get('item_id'))
+        profile.favorites.add(item)
+        return Response(status=status.HTTP_202_ACCEPTED)
+
+class RemoveFavorite(UpdateAPIView):
+    def put(self, request,format=None):
+        profile = Profile.objects.get(user_id = request.user.id)
+        item = Item.objects.get(id = request.data.get('item_id'))
+        profile.favorites.remove(item)
+        return Response(status=status.HTTP_202_ACCEPTED)

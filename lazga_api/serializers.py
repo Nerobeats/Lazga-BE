@@ -20,6 +20,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
         new_user.email = validated_data['email']
         new_user.save()
         Profile.objects.create(user = new_user)
+        Order.objects.create(user = new_user)
         return validated_data
 
 class ItemCreateSerializer(serializers.ModelSerializer):
@@ -53,18 +54,27 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    orderitem_set = OrderItemSerializer(many=True)
+    products = OrderItemSerializer(many=True)
 
     class Meta:
         model = Order
-        exclude = ['user', 'products']
+        exclude = ['user']
 
 class OrderListSerializer(serializers.ModelSerializer):
-    orderitem_set = OrderItemSerializer(many=True)
+    products = serializers.SerializerMethodField()
 
     class Meta:
         model = Order
         fields = '__all__'
+    def get_products(self, obj):
+        return (OrderItemSerializer(OrderItem.objects.filter(order=obj),many =True).data)
+
+
+class OrderSubmitSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = ["status"]
+
 
 class ProfileSerializer(serializers.ModelSerializer):
     favorites = ItemSerializer(many=True)
@@ -73,9 +83,8 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         fields = '__all__'
 
-# class FavoriteListSerializer(serializers.ModelSerializer):
-#     Favoriteitem_set = FavoriteItemSerializer(many=True)
+class ProfileUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        exclude = ['user', 'favorites']
 
-#     class Meta:
-#         model = FavoriteItem
-#         fields = '__all__'

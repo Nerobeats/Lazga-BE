@@ -46,17 +46,22 @@ urlpatterns = [
     path('create/', views.ItemCreateView.as_view(), name='create'),
     path('list/', views.ItemsList.as_view(), name='list'),
     path('update/<int:item_id>', views.ItemUpdateView.as_view(), name='update'),
-    path('delete/<int:item_id>', views.DeleteView.as_view(), name='delete'),
+    path('delete/<int:item_id>', views.DeleteItemView.as_view(), name='delete'),
     # Orders
-    path('create/order/', views.OrderCreateView.as_view(), name='order-create'),
+    path('additem/', views.OrderItemCreateView.as_view(), name='add-item-create'),
+    path('submitorder/', views.SubmitOrder.as_view(), name='submit-order-update'),
+    # path('create/order/', views.OrderCreateView.as_view(), name='order-create'),
     path('list/orders/', views.OrdersList.as_view(), name='orders-list'),
     path('update/order/<int:order_id>',
          views.OrderUpdateView.as_view(), name='order-update'),
-    path('delete/order/<int:order_id>',
-         views.OrderDeleteView.as_view(), name='order-delete'),
+    path('delete/order/<int:orderitem_id>',
+         views.OrderItemDeleteView.as_view(), name='order-delete'),
     # Types (Categories)
     path('types/', views.TypesList.as_view(), name='types-list'),
-
+    # Profile
+    path('profile/<int:profile_id>/update/', views.ProfileUpdate.as_view(), name='profile-update'),
+    path('profile/addtofavorites/', views.AddToFavorites.as_view(), name='add-to-favorites'),
+    path('profile/removefavorite/', views.RemoveFavorite.as_view(), name='remove-favorites'),
    
 
 ]

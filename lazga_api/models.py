@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+import datetime
+
 
 class Type (models.Model):
 
@@ -40,7 +42,7 @@ class OrderItem(models.Model):
     size = models.CharField(default="N/A", max_length=50)
     magic = models.BooleanField(default=False)
     quantity = models.PositiveIntegerField()
-
+    
     def __str__(self):
         return (f'{self.order.user.username}\'s order of {self.item.name} in order {self.order.id}')
 
@@ -49,7 +51,7 @@ class Order(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="orders")
     products = models.ManyToManyField(Item, through=OrderItem)
-    totalPrice = models.DecimalField(max_digits=6, decimal_places=2)
+    totalPrice = models.DecimalField(max_digits=6, decimal_places=2, default = 0)
     PREPARING = "PR"
     OUT_FOR_DELIVERY = "OD"
     DELIVERED = "DV"
@@ -69,7 +71,7 @@ class Order(models.Model):
         choices=STATUS,
         default=NOT_SUBMITTED,
     )
-
+    datetime = models.DateTimeField(default = datetime.datetime.now())
     def __str__(self):
         return  (f'{self.user.username}\'s order #{self.id}')
 
@@ -83,20 +85,3 @@ class Profile (models.Model):
     def __str__(self):
         return (f'{self.user.username}\'s profile')
 
-# class FavoriteItem(models.Model):
-#     favorite = models.ForeignKey("Favorite", on_delete=models.CASCADE)
-#     item = models.ForeignKey(Item, on_delete=models.CASCADE)
-
-#     def __str__(self):
-#         return (f'{self.favorite.user.username} has {self.item.name} in favorite list')
-
-
-# class Favorites(models.Model):
-#     user = models.OneToOneField(User ,on_delete=models.CASCADE,primary_key)
-
-#     products = models.ManyToManyField(Item, through=FavoriteItem)
-
-#     def __str__(self):
-#         return (f'{self.favorite.user.username}\'s favoirtes list')
-#     class Meta:
-#         verbose_name_plural = "Favorites"
