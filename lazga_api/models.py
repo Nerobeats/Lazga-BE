@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-import uuid
-
+from annoying.fields import AutoOneToOneField
 
 class Type (models.Model):
 
@@ -9,7 +8,9 @@ class Type (models.Model):
         max_length=50,
         default="tshirt",
     )
-
+    color = models.BooleanField(default = False)
+    size = models.BooleanField(default = False)
+    magic = models.BooleanField(default = False)
     def __str__(self):
         return self.type
 
@@ -34,8 +35,8 @@ class Item(models.Model):
 class OrderItem(models.Model):
     order = models.ForeignKey("Order", on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    color = models.CharField(default="0", max_length=50)
-    size = models.CharField(default="0", max_length=50)
+    color = models.CharField(default="N/A", max_length=50)
+    size = models.CharField(default="N/A", max_length=50)
     magic = models.BooleanField(default=False)
     quantity = models.PositiveIntegerField()
 
@@ -69,4 +70,31 @@ class Order(models.Model):
     )
 
     def __str__(self):
-        return  (f'{self.order.user.username}\'s order #{self.order.id}')
+        return  (f'{self.order.user.username}\'s order #{self.id}')
+
+
+class Profile (models.Model):
+    user = models.OneToOneField(User, on_delete = models.CASCADE , primary_key = True )
+    bio = models.TextField(null = True , blank = True)
+    image = models.ImageField(null = True , blank = True)
+    favorites = models.ManyToManyField(Item, related_name = "favorites" ,blank = True,default = None , symmetrical = False)
+    def __str__(self):
+        return (f'{self.user.username}\'s profile')
+
+# class FavoriteItem(models.Model):
+#     favorite = models.ForeignKey("Favorite", on_delete=models.CASCADE)
+#     item = models.ForeignKey(Item, on_delete=models.CASCADE)
+
+#     def __str__(self):
+#         return (f'{self.favorite.user.username} has {self.item.name} in favorite list')
+
+
+# class Favorites(models.Model):
+#     user = models.OneToOneField(User ,on_delete=models.CASCADE,primary_key)
+
+#     products = models.ManyToManyField(Item, through=FavoriteItem)
+
+#     def __str__(self):
+#         return (f'{self.favorite.user.username}\'s favoirtes list')
+#     class Meta:
+#         verbose_name_plural = "Favorites"

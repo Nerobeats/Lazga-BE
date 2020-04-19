@@ -52,12 +52,17 @@ class OrderCreateView(APIView):
         for order in request.data.get("products"):
             product_id = order.get('item')
             quantity = order.get('quantity')
-            size = order.get('size')
-            color = order.get('color')
             product_obj = Item.objects.get(id=product_id)
             product_obj.selling_counter = product_obj.selling_counter + int(quantity)
-            productItem = OrderItem.objects.create(
-                order=order_obj, item=product_obj, size=size, color=color, quantity=quantity)
+            size = order.get('size')
+            color = order.get('color')
+            magic = order.get('magic')
+            if ( size and color):
+                productItem = OrderItem.objects.create(
+                    order=order_obj, item=product_obj, size=size, color=color, quantity=quantity)
+            elif (magic):
+                productItem = OrderItem.objects.create(
+                    order=order_obj, item=product_obj, magic= magic, quantity=quantity)
         return Response(status=status.HTTP_201_CREATED)
 
 
