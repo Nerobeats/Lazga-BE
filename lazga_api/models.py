@@ -71,7 +71,7 @@ class Order(models.Model):
         choices=STATUS,
         default=NOT_SUBMITTED,
     )
-    datetime = models.DateTimeField(default =timezone.now())
+    datetime = models.DateTimeField(default =timezone.now)
     def __str__(self):
         return  (f'{self.user.username}\'s order #{self.id}')
 
