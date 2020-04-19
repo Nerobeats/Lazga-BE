@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'lazga_api',
     'rest_framework',
     'corsheaders',
-    'annoying',
 ]
 
 MIDDLEWARE = [

@@ -10,6 +10,7 @@ class Type (models.Model):
     color = models.BooleanField(default = False)
     size = models.BooleanField(default = False)
     magic = models.BooleanField(default = False)
+
     def __str__(self):
         return self.type
 
@@ -27,6 +28,7 @@ class Item(models.Model):
     added_by = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     featured = models.BooleanField(default= False)
     selling_counter = models.PositiveIntegerField(default = 0)
+
     def __str__(self):
         return self.name
 
@@ -77,6 +79,7 @@ class Profile (models.Model):
     bio = models.TextField(null = True , blank = True)
     image = models.ImageField(null = True , blank = True)
     favorites = models.ManyToManyField(Item, related_name = "favorites" ,blank = True,default = None , symmetrical = False)
+    
     def __str__(self):
         return (f'{self.user.username}\'s profile')
 
