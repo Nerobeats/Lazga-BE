@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-import datetime
+from django.utils import timezone
 
 
 class Type (models.Model):
@@ -71,7 +71,7 @@ class Order(models.Model):
         choices=STATUS,
         default=NOT_SUBMITTED,
     )
-    datetime = models.DateTimeField(default = datetime.datetime.now())
+    datetime = models.DateTimeField(default =timezone.now())
     def __str__(self):
         return  (f'{self.user.username}\'s order #{self.id}')
 
