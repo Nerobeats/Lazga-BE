@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Item, Order, OrderItem,Type
+from .models import Item, Order, OrderItem,Type,Profile
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
@@ -19,8 +19,8 @@ class UserCreateSerializer(serializers.ModelSerializer):
         new_user.last_name = validated_data['last_name']
         new_user.email = validated_data['email']
         new_user.save()
+        Profile.objects.create(user = new_user)
         return validated_data
-
 
 class ItemCreateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -65,3 +65,17 @@ class OrderListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = '__all__'
+
+class ProfileSerializer(serializers.ModelSerializer):
+    favorites = ItemSerializer(many=True)
+
+    class Meta:
+        model = Profile
+        fields = '__all__'
+
+# class FavoriteListSerializer(serializers.ModelSerializer):
+#     Favoriteitem_set = FavoriteItemSerializer(many=True)
+
+#     class Meta:
+#         model = FavoriteItem
+#         fields = '__all__'

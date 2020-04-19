@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'lazga_api',
     'rest_framework',
-     'corsheaders',
+    'corsheaders',
+    'annoying',
 ]
 
 MIDDLEWARE = [
