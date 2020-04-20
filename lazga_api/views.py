@@ -98,8 +98,7 @@ class SubmitOrder(UpdateAPIView):
 	serializer_class = OrderSubmitSerializer
 	def get_object(self):
 		order = Order.objects.get(user = self.request.user, status ="NS" )
-		if(self.request.data.get('status' != "NS")):
-			Order.objects.create(user = self.request.user , status = "NS")
+		Order.objects.create(user = self.request.user , status = "NS")
 		return (order)
 
 
