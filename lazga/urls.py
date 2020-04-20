@@ -50,7 +50,6 @@ urlpatterns = [
     # Orders
     path('additem/', views.OrderItemCreateView.as_view(), name='add-item-create'),
     path('submitorder/', views.SubmitOrder.as_view(), name='submit-order-update'),
-    # path('create/order/', views.OrderCreateView.as_view(), name='order-create'),
     path('list/orders/', views.OrdersList.as_view(), name='orders-list'),
     path('update/order/<int:order_id>',
          views.OrderUpdateView.as_view(), name='order-update'),
@@ -60,6 +59,7 @@ urlpatterns = [
     path('types/', views.TypesList.as_view(), name='types-list'),
     # Profile
     path('profile/<int:profile_id>/update/', views.ProfileUpdate.as_view(), name='profile-update'),
+    path('profile/<int:profile_id>/detail/', views.ProfileDetails.as_view(), name='profile-detail'),
     path('profile/addtofavorites/', views.AddToFavorites.as_view(), name='add-to-favorites'),
     path('profile/removefavorite/', views.RemoveFavorite.as_view(), name='remove-favorites'),
    
