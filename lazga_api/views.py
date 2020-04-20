@@ -80,9 +80,9 @@ class OrderItemCreateView(APIView):
 			size = request.data.get('size')
 		if (type.magic):
 			magic = request.data.get('magic')
+		if product_obj in order.products.all():
+			new_product = OrderItem.objects.create(order = order, item = product_obj , size = size , quantity = quantity , color = color , magic = magic)
 		order.products.add(product_obj , through_defaults={"order" : order, "item" :product_obj,"quantity" : quantity,  "color": color, "size" : size , "magic" : magic})
-		new_product = OrderItem.objects.create(order = order, item = product_obj , size = size , quantity = quantity , color = color , magic = magic)
-		new_product.save()
 		return Response(status=status.HTTP_201_CREATED)
 		
 
