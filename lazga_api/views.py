@@ -16,7 +16,8 @@ TypeSerializer,
 OrderListSerializer,
 ProfileSerializer,
 OrderSubmitSerializer,
-ProfileUpdateSerializer
+ProfileUpdateSerializer,
+UserSerializer
 )
 
 from .models import Item, Order, OrderItem,Type, Profile
@@ -134,6 +135,13 @@ class ProfileDetails(RetrieveAPIView):
 	lookup_field = 'user_id'
 	lookup_url_kwarg = 'profile_id'
 	
+class UserDetails(RetrieveAPIView):
+	queryset = User.objects.all()
+	serializer_class = UserSerializer
+	permission_classes = [IsAuthenticated]
+	lookup_field = 'id'
+	lookup_url_kwarg = 'user_id'
+	
 
 class ProfileUpdate(UpdateAPIView):
    def put(self, request, profile_id, format=None):
@@ -145,6 +153,8 @@ class ProfileUpdate(UpdateAPIView):
 	   return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class AddToFavorites(UpdateAPIView):
+	permission_classes = [IsAuthenticated]
+
 	def put(self, request,format=None):
 		profile = Profile.objects.get(user_id = request.user.id)
 		item = Item.objects.get(id = request.data.get('item_id'))
@@ -152,6 +162,8 @@ class AddToFavorites(UpdateAPIView):
 		return Response(status=status.HTTP_202_ACCEPTED)
 
 class RemoveFavorite(UpdateAPIView):
+	permission_classes = [IsAuthenticated]
+
 	def put(self, request,format=None):
 		profile = Profile.objects.get(user_id = request.user.id)
 		item = Item.objects.get(id = request.data.get('item_id'))

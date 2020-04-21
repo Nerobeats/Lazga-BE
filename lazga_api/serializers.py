@@ -23,11 +23,16 @@ class UserCreateSerializer(serializers.ModelSerializer):
         Order.objects.create(user = new_user)
         return validated_data
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'
+
+        
 class ItemCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
         fields = ['name', 'description', 'type', 'tags', "image_url", "price"]
-
 
 class ItemSerializer(serializers.ModelSerializer):
 

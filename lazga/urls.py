@@ -60,6 +60,7 @@ urlpatterns = [
     # Profile
     path('profile/<int:profile_id>/update/', views.ProfileUpdate.as_view(), name='profile-update'),
     path('profile/<int:profile_id>/detail/', views.ProfileDetails.as_view(), name='profile-detail'),
+    path('user/<int:profile_id>/detail/', views.UserDetails.as_view(), name='user-detail'),
     path('profile/addtofavorites/', views.AddToFavorites.as_view(), name='add-to-favorites'),
     path('profile/removefavorite/', views.RemoveFavorite.as_view(), name='remove-favorites'),
    
