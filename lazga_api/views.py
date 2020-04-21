@@ -21,6 +21,7 @@ UserSerializer
 )
 
 from .models import Item, Order, OrderItem,Type, Profile
+from django.contrib.auth.models import User
 
 from .permissions import IsNotSubmitted ,IsOwner
 
